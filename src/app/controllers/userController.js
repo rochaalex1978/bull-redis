@@ -9,7 +9,27 @@ export default {
       password,
     }
 
-    await queue.add({ user })
+    //await queue.add('RegistrationMail', { user })
+    //await queue.add('userReport', { user })
+    /*queue.add('userReport', { user }, (job, err) => {
+      console.log(err)
+    })*/
+    const teste = await queue.add('userReport', {
+      user: user,
+      settings: {
+        backoffStrategies: {
+          foo: function(attemptsMade, err) {
+            if (err instanceof MySpecificError) {
+              console.log('teste2')
+              return 10000
+            }
+            console.log('teste')
+            return 1000
+          },
+        },
+      },
+    })
+    //console.log(teste)
 
     return res.json(user)
   },
